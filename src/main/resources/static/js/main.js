@@ -6,10 +6,17 @@ let currentUserLat = null;
 let currentUserLng = null;
 let allReports = [];
 let heatLayer = null;
-
+let radarInterval = null;
 let userMarker = null ;
 let markersVisible = true ;
 let heatmapVisible = true ;
+let responderMarkers = [];
+let demoVolunteers = [
+    {name:"Dr. Alex", skill:"DOCTOR", lat:9.968, lng:76.326},
+    {name:"Nurse Maria", skill:"NURSE", lat:9.967, lng:76.322},
+    {name:"Rahul", skill:"CPR_TRAINED", lat:9.970, lng:76.327},
+    {name:"Arjun", skill:"GENERAL_VOLUNTEER", lat:9.965, lng:76.320}
+];
 
 const redIcon = new L.Icon({
     iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
@@ -133,7 +140,81 @@ function checkNearbyHazards() {
         hideAlert();
     }
 }
+function getSkillPriority(skill){
 
+    if(skill === "DOCTOR") return 1;
+    if(skill === "NURSE") return 2;
+    if(skill === "CPR_TRAINED") return 3;
+    return 4;
+
+}
+function calculateDistance(lat1, lon1, lat2, lon2){
+
+    const R = 6371;
+
+    const dLat = (lat2-lat1) * Math.PI/180;
+    const dLon = (lon2-lon1) * Math.PI/180;
+
+    const a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1*Math.PI/180) *
+        Math.cos(lat2*Math.PI/180) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
+
+}
+function findBestResponder(userLat, userLng){
+
+    let responders = demoVolunteers.map(v=>{
+
+        return {
+            ...v,
+            distance: calculateDistance(userLat,userLng,v.lat,v.lng),
+            priority: getSkillPriority(v.skill)
+        }
+
+    });
+
+    responders.sort((a,b)=>{
+
+        if(a.priority !== b.priority){
+            return a.priority - b.priority;
+        }
+
+        return a.distance - b.distance;
+
+    });
+
+    return responders[0];
+
+}
+function showResponderRadar(){
+
+    responderMarkers.forEach(m=>map.removeLayer(m));
+    responderMarkers = [];
+
+    demoVolunteers.forEach(v=>{
+
+        let marker = L.circleMarker(
+            [v.lat,v.lng],
+            {
+                radius:8,
+                color:"blue"
+            }
+        ).addTo(map);
+
+        marker.bindPopup(
+            v.name + " (" + v.skill + ")"
+        );
+
+        responderMarkers.push(marker);
+
+    });
+
+}
 function showAlert(message) {
     const alertBox = document.getElementById("alertBox");
     if (!alertBox) return;
@@ -403,7 +484,21 @@ async function activateSOS(){
             activeSosId = data.id;
 
             sosActive = true;
+            const best = findBestResponder(
+                position.coords.latitude,
+                position.coords.longitude
+            );
 
+            document.getElementById("responderName").innerText =
+                best.name;
+
+            document.getElementById("responderSkill").innerText =
+                "Skill: " + best.skill;
+
+            document.getElementById("responderDistance").innerText =
+                "Distance: " + best.distance.toFixed(2) + " km";
+
+            document.getElementById("bestResponderBox").style.display="block";
             // SHOW GOLDEN HOUR GUIDE
             const guide = document.getElementById("goldenHourGuide");
             if(guide){
@@ -411,7 +506,15 @@ async function activateSOS(){
             }
 
             updateSOSButton();
+            showResponderRadar();
+            radarInterval=setInterval(()=>{
 
+                moveResponders(
+                    position.coords.latitude,
+                    position.coords.longitude
+                );
+
+            },2000);
         }catch(error){
             console.error(error);
         }
@@ -419,7 +522,18 @@ async function activateSOS(){
     });
 
 }
+function moveResponders(targetLat,targetLng){
 
+    demoVolunteers.forEach(v=>{
+
+        v.lat += (targetLat - v.lat) * 0.02;
+        v.lng += (targetLng - v.lng) * 0.02;
+
+    });
+
+    showResponderRadar();
+
+}
 async function cancelSOS(){
 
     if(!activeSosId) return;
@@ -435,6 +549,24 @@ async function cancelSOS(){
             sosActive = false;
             activeSosId = null;
 
+            // STOP RADAR MOVEMENT
+            if(radarInterval){
+                clearInterval(radarInterval);
+                radarInterval = null;
+            }
+
+            // REMOVE RESPONDER MARKERS
+            responderMarkers.forEach(marker=>{
+                map.removeLayer(marker);
+            });
+
+            responderMarkers = [];
+
+            // HIDE BEST RESPONDER MESSAGE
+            const box = document.getElementById("bestResponderBox");
+            if(box){
+                box.style.display="none";
+            }
             // HIDE GOLDEN HOUR GUIDE
             const guide = document.getElementById("goldenHourGuide");
             if(guide){
