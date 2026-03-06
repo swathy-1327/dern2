@@ -285,3 +285,27 @@ button {
     margin-top: 0;
     margin-bottom: 10px;
 }
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.dashboard-card h3 {
+    margin-top: 0;
+}
+
+.dashboard-card p {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 10px 0 0;
+}
