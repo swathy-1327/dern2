@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
             name: document.getElementById("name").value.trim(),
             email: document.getElementById("email").value.trim(),
             password: document.getElementById("password").value,
-            role: document.getElementById("role").value
+            role: document.getElementById("role").value,
+            fatherPhone: document.getElementById("fatherPhone").value.trim(),
+            motherPhone: document.getElementById("motherPhone").value.trim(),
+            guardianPhone: document.getElementById("guardianPhone").value.trim()
         };
 
         try {

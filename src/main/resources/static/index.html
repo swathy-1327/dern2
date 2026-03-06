@@ -23,14 +23,26 @@
         <a href="/dashboard.html">Dashboard</a>
     </nav>
 </header>
+<button id="menuToggleBtn" class="hamburger-btn">☰</button>
+
+<div id="sideMenu" class="side-menu hidden-menu">
+    <h3>Menu</h3>
+
+    <button id="toggleMarkersBtn">Hide Markers</button>
+    <button id="toggleHeatmapBtn">Hide Heatmap</button>
+    <button id="logoutBtn">Logout</button>
+
+    <hr />
+
+    <a href="tel:100">Police</a>
+    <a href="tel:108">Ambulance</a>
+    <a href="tel:101">Fire Force</a>
+</div>
 
 <main>
     <div id="alertBox" class="alert-hidden"></div>
 
-    <div class="map-controls">
-        <button id="toggleMarkersBtn">Hide Markers</button>
-        <button id="toggleHeatmapBtn">Hide Heatmap</button>
-    </div>
+
 
     <div id="legendBox">
         <h4>Legend</h4>
@@ -41,6 +53,8 @@
     </div>
 
     <div id="map"></div>
+
+
 
     <button id="sosButton" class="sos-off">SOS</button>
 

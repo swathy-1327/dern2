@@ -5,8 +5,35 @@ public class SignupRequest {
     private String email;
     private String password;
     private String role;
+    private String fatherPhone;
+    private String motherPhone;
+    private String guardianPhone;
 
     public SignupRequest() {
+    }
+
+    public String getFatherPhone() {
+        return fatherPhone;
+    }
+
+    public void setFatherPhone(String fatherPhone) {
+        this.fatherPhone = fatherPhone;
+    }
+
+    public String getMotherPhone() {
+        return motherPhone;
+    }
+
+    public void setMotherPhone(String motherPhone) {
+        this.motherPhone = motherPhone;
+    }
+
+    public String getGuardianPhone() {
+        return guardianPhone;
+    }
+
+    public void setGuardianPhone(String guardianPhone) {
+        this.guardianPhone = guardianPhone;
     }
 
     public String getName() {

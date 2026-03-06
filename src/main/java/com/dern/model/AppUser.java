@@ -11,6 +11,10 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String fatherPhone;
+    private String motherPhone;
+    private String guardianPhone;
+
     private String name;
 
     @Column(unique = true, nullable = false)
@@ -27,6 +31,29 @@ public class AppUser {
     public AppUser() {
     }
 
+    public String getFatherPhone() {
+        return fatherPhone;
+    }
+
+    public void setFatherPhone(String fatherPhone) {
+        this.fatherPhone = fatherPhone;
+    }
+
+    public String getMotherPhone() {
+        return motherPhone;
+    }
+
+    public void setMotherPhone(String motherPhone) {
+        this.motherPhone = motherPhone;
+    }
+
+    public String getGuardianPhone() {
+        return guardianPhone;
+    }
+
+    public void setGuardianPhone(String guardianPhone) {
+        this.guardianPhone = guardianPhone;
+    }
     public Long getId() {
         return id;
     }

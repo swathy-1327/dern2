@@ -47,6 +47,24 @@ const blueIcon = new L.Icon({
     shadowSize: [41,41]
 });
 
+async function checkAuthAndLoad() {
+    try {
+        const response = await fetch("/api/auth/me");
+        if (!response.ok) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        const user = await response.json();
+        console.log("Logged in as:", user.name, user.role);
+
+        initMap();
+    } catch (error) {
+        console.error("Auth check failed:", error);
+        window.location.href = "/login.html";
+    }
+}
+
 function initMap() {
     const defaultLat = 10.0159;
     const defaultLng = 76.3419;
@@ -299,7 +317,20 @@ function drawHeatMap() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    initMap();
+    checkAuthAndLoad();
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", logoutUser);
+    }
+    const menuToggleBtn = document.getElementById("menuToggleBtn");
+    const sideMenu = document.getElementById("sideMenu");
+
+    if (menuToggleBtn && sideMenu) {
+        menuToggleBtn.addEventListener("click", () => {
+            sideMenu.classList.toggle("hidden-menu");
+        });
+    }
 
     const sosButton = document.getElementById("sosButton");
     if (sosButton) {
@@ -326,6 +357,18 @@ document.addEventListener("DOMContentLoaded", () => {
         loadReports();
     }, 15000);
 });
+
+async function logoutUser() {
+    try {
+        await fetch("/api/auth/logout", {
+            method: "POST"
+        });
+
+        window.location.href = "/login.html";
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
+}
 
 async function activateSOS(){
 
