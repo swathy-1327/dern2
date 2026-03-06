@@ -30,6 +30,21 @@
         <label>Description</label>
         <textarea id="description"></textarea>
 
+        <label>Upload Accident Image</label>
+        <input type="file" id="reportImage" accept="image/*" />
+
+        <div id="imagePreviewContainer" style="display:none;">
+            <p>Image Preview:</p>
+            <img id="imagePreview" alt="Preview" style="max-width:100%; border-radius:10px; margin-top:8px;" />
+        </div>
+
+        <div id="aiVerificationBox" class="ai-box" style="display:none;">
+            <h3>AI Accident Verification</h3>
+            <p><strong>Status:</strong> <span id="aiStatus"></span></p>
+            <p><strong>Confidence:</strong> <span id="aiConfidence"></span></p>
+            <p><strong>Severity Estimate:</strong> <span id="aiSeverity"></span></p>
+        </div>
+
         <label>Latitude</label>
         <input type="number" step="any" id="latitude" required />
 

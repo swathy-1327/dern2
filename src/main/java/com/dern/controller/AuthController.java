@@ -4,6 +4,7 @@ import com.dern.dto.LoginRequest;
 import com.dern.dto.SignupRequest;
 import com.dern.model.AppUser;
 import com.dern.model.UserRole;
+import com.dern.model.VolunteerSkill;
 import com.dern.repository.AppUserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
+
+
 
         if (request.getName() == null || request.getName().isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Name is required"));
@@ -71,7 +74,13 @@ public class AuthController {
         user.setCreatedAt(LocalDateTime.now());
 
         appUserRepository.save(user);
-
+        if (role == UserRole.VOLUNTEER && request.getVolunteerSkill() != null) {
+            try {
+                user.setVolunteerSkill(
+                        VolunteerSkill.valueOf(request.getVolunteerSkill().toUpperCase())
+                );
+            } catch (Exception ignored) {}
+        }
         return ResponseEntity.ok(Map.of("message", "Signup successful"));
     }
 

@@ -8,8 +8,17 @@ public class SignupRequest {
     private String fatherPhone;
     private String motherPhone;
     private String guardianPhone;
+    private String volunteerSkill;
 
     public SignupRequest() {
+    }
+
+    public String getVolunteerSkill() {
+        return volunteerSkill;
+    }
+
+    public void setVolunteerSkill(String volunteerSkill) {
+        this.volunteerSkill = volunteerSkill;
     }
 
     public String getFatherPhone() {

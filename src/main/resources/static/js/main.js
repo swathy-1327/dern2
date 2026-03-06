@@ -278,10 +278,13 @@ async function loadReports() {
                 )
                     .addTo(map)
                     .bindPopup(`
-                    <b>${report.type}</b><br>
-                    ${report.description || "No description"}<br>
-                    Severity: ${report.severity ?? "N/A"}
-                `);
+                     <b>${report.type}</b><br>
+                     ${report.description || "No description"}<br>
+                     Severity: ${report.severity ?? "N/A"}<br>
+                     AI Status: ${report.aiStatus || "Not analysed"}<br>
+                     AI Confidence: ${report.aiConfidence || "N/A"}<br>
+                     AI Severity: ${report.aiSeverityEstimate || "N/A"}
+`);
 
                 reportMarkers.push(marker);
             });
@@ -401,6 +404,12 @@ async function activateSOS(){
 
             sosActive = true;
 
+            // SHOW GOLDEN HOUR GUIDE
+            const guide = document.getElementById("goldenHourGuide");
+            if(guide){
+                guide.style.display = "block";
+            }
+
             updateSOSButton();
 
         }catch(error){
@@ -425,6 +434,12 @@ async function cancelSOS(){
 
             sosActive = false;
             activeSosId = null;
+
+            // HIDE GOLDEN HOUR GUIDE
+            const guide = document.getElementById("goldenHourGuide");
+            if(guide){
+                guide.style.display = "none";
+            }
 
             updateSOSButton();
         }

@@ -47,16 +47,29 @@ async function loadActiveRequests() {
         }
 
         container.innerHTML = data.map(event => `
-            <div class="request-card">
-                <h4>Emergency Request #${event.id}</h4>
-                <p><strong>Status:</strong> ${event.status}</p>
-                <p><strong>User ID:</strong> ${event.userId ?? "Unknown"}</p>
-                <p><strong>Latitude:</strong> ${event.latitude}</p>
-                <p><strong>Longitude:</strong> ${event.longitude}</p>
-                <a target="_blank" href="https://www.google.com/maps?q=${event.latitude},${event.longitude}">
-                  Open Location
-                </a>
-            </div>
+        <div class="request-card">
+
+        <h4>Emergency Request #${event.id}</h4>
+
+        <p><strong>Status:</strong> ${event.status}</p>
+
+        <p><strong>Location:</strong> ${event.latitude}, ${event.longitude}</p>
+
+        <a target="_blank"
+        href="https://www.google.com/maps?q=${event.latitude},${event.longitude}">
+        Open Location
+        </a>
+
+        <p><strong>Responder Priority:</strong></p>
+
+        <ul>
+        <li>Doctors nearby</li>
+        <li>Nurses nearby</li>
+        <li>CPR trained volunteers</li>
+        <li>General volunteers</li>
+        </ul>
+
+        </div>
         `).join("");
     } catch (error) {
         console.error(error);

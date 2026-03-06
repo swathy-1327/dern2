@@ -26,9 +26,20 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Enumerated(EnumType.STRING)
+    private VolunteerSkill volunteerSkill;
+
     private LocalDateTime createdAt;
 
     public AppUser() {
+    }
+
+    public VolunteerSkill getVolunteerSkill() {
+        return volunteerSkill;
+    }
+
+    public void setVolunteerSkill(VolunteerSkill volunteerSkill) {
+        this.volunteerSkill = volunteerSkill;
     }
 
     public String getFatherPhone() {

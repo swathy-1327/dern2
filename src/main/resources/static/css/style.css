@@ -255,3 +255,33 @@ button {
     border-top: 1px solid #ddd;
     margin: 8px 0;
 }
+
+.hidden-guide{
+    display:none;
+}
+
+#goldenHourGuide{
+    position:fixed;
+    bottom:120px;
+    right:20px;
+    width:300px;
+    background:white;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    z-index:9999;
+}
+
+.ai-box {
+    margin-top: 16px;
+    padding: 16px;
+    background: #eef6ff;
+    border-left: 5px solid #2563eb;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.ai-box h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}

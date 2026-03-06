@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
             role: document.getElementById("role").value,
             fatherPhone: document.getElementById("fatherPhone").value.trim(),
             motherPhone: document.getElementById("motherPhone").value.trim(),
-            guardianPhone: document.getElementById("guardianPhone").value.trim()
+            guardianPhone: document.getElementById("guardianPhone").value.trim(),
+            volunteerSkill: document.getElementById("volunteerSkill").value
         };
 
         try {

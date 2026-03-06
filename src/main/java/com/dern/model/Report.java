@@ -18,6 +18,9 @@ public class Report {
     private Integer severity;
     private String numberPlate;
     private LocalDateTime createdAt;
+    private String aiStatus;
+    private String aiConfidence;
+    private String aiSeverityEstimate;
 
     public Report() {
     }
@@ -31,7 +34,29 @@ public class Report {
         this.numberPlate = numberPlate;
         this.createdAt = createdAt;
     }
+    public String getAiStatus() {
+        return aiStatus;
+    }
 
+    public void setAiStatus(String aiStatus) {
+        this.aiStatus = aiStatus;
+    }
+
+    public String getAiConfidence() {
+        return aiConfidence;
+    }
+
+    public void setAiConfidence(String aiConfidence) {
+        this.aiConfidence = aiConfidence;
+    }
+
+    public String getAiSeverityEstimate() {
+        return aiSeverityEstimate;
+    }
+
+    public void setAiSeverityEstimate(String aiSeverityEstimate) {
+        this.aiSeverityEstimate = aiSeverityEstimate;
+    }
     public Long getId() {
         return id;
     }
