@@ -493,6 +493,9 @@ async function activateSOS(){
             activeSosId = data.id;
 
             sosActive = true;
+
+            showImmediateSosNotification();
+
             const alertEntry = {
                 title: "SOS Alert Triggered",
                 message: `Emergency reported at ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`,
@@ -545,6 +548,23 @@ async function activateSOS(){
 
     });
 
+}
+async function showImmediateSosNotification() {
+    if (localStorage.getItem("dernNotificationsEnabled") !== "true") return;
+    if (!("Notification" in window)) return;
+    if (Notification.permission !== "granted") return;
+
+    if ("serviceWorker" in navigator) {
+        const reg = await navigator.serviceWorker.ready;
+        await reg.showNotification("SOS Activated", {
+            body: "Your SOS alert was activated successfully.",
+            requireInteraction: true
+        });
+    } else {
+        new Notification("SOS Activated", {
+            body: "Your SOS alert was activated successfully."
+        });
+    }
 }
 function moveResponders(targetLat,targetLng){
 

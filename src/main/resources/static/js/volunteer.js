@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const ok = await checkVolunteerAuth();
     if (!ok) return;
-
+    await pollVolunteerNotifications(true);
+    setInterval(() => pollVolunteerNotifications(false), 5000);
     loadActiveRequests();
     setInterval(loadActiveRequests, 10000);
 });
@@ -68,5 +69,42 @@ async function loadActiveRequests() {
     } catch (error) {
         console.error(error);
         container.innerHTML = "<p>Failed to load active requests.</p>";
+    }
+}
+let volunteerSeenNotificationIds = new Set();
+
+async function pollVolunteerNotifications(initialLoad = false) {
+    try {
+        const response = await fetch("/api/notifications/me");
+        const data = await response.json();
+
+        if (!response.ok) return;
+
+        if (!initialLoad) {
+            for (const item of data) {
+                if (!volunteerSeenNotificationIds.has(item.id)) {
+                    volunteerSeenNotificationIds.add(item.id);
+
+                    if (localStorage.getItem("dernNotificationsEnabled") === "true"
+                        && "Notification" in window
+                        && Notification.permission === "granted") {
+
+                        if ("serviceWorker" in navigator) {
+                            const reg = await navigator.serviceWorker.ready;
+                            await reg.showNotification(item.title, {
+                                body: item.message,
+                                requireInteraction: true
+                            });
+                        } else {
+                            new Notification(item.title, { body: item.message });
+                        }
+                    }
+                }
+            }
+        } else {
+            data.forEach(item => volunteerSeenNotificationIds.add(item.id));
+        }
+    } catch (e) {
+        console.error(e);
     }
 }

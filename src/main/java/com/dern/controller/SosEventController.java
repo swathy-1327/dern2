@@ -4,7 +4,8 @@ import com.dern.model.SosEvent;
 import com.dern.repository.SosEventRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
-
+import com.dern.model.NotificationEvent;
+import com.dern.repository.NotificationEventRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,9 +14,12 @@ import java.util.List;
 public class SosEventController {
 
     private final SosEventRepository sosEventRepository;
+    private final NotificationEventRepository notificationEventRepository;
 
-    public SosEventController(SosEventRepository sosEventRepository) {
+    public SosEventController(SosEventRepository sosEventRepository,
+                              NotificationEventRepository notificationEventRepository) {
         this.sosEventRepository = sosEventRepository;
+        this.notificationEventRepository = notificationEventRepository;
     }
 
     @PostMapping
@@ -32,7 +36,32 @@ public class SosEventController {
             sosEvent.setStatus("ACTIVE");
         }
 
-        return sosEventRepository.save(sosEvent);
+
+        SosEvent saved = sosEventRepository.save(sosEvent);
+
+        if (userId != null) {
+            NotificationEvent userNotification = new NotificationEvent();
+            userNotification.setRecipientUserId(Long.valueOf(userId.toString()));
+            userNotification.setTitle("SOS Activated");
+            userNotification.setMessage("Your SOS alert was activated successfully.");
+            userNotification.setLatitude(saved.getLatitude());
+            userNotification.setLongitude(saved.getLongitude());
+            userNotification.setIsRead(false);
+            userNotification.setCreatedAt(LocalDateTime.now());
+            notificationEventRepository.save(userNotification);
+        }
+
+        NotificationEvent volunteerNotification = new NotificationEvent();
+        volunteerNotification.setRecipientRole("VOLUNTEER");
+        volunteerNotification.setTitle("New SOS Alert");
+        volunteerNotification.setMessage("A user has triggered an SOS emergency.");
+        volunteerNotification.setLatitude(saved.getLatitude());
+        volunteerNotification.setLongitude(saved.getLongitude());
+        volunteerNotification.setIsRead(false);
+        volunteerNotification.setCreatedAt(LocalDateTime.now());
+        notificationEventRepository.save(volunteerNotification);
+
+        return saved;
     }
 
     @PutMapping("/{id}/cancel")
