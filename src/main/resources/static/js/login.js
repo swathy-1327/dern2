@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.role === "VOLUNTEER") {
                     window.location.href = "/volunteer.html";
                 } else {
-                    window.location.href = "/index.html";
+                    window.location.href = "/main.html";
                 }
             }
         } catch (error) {

@@ -10,21 +10,21 @@ async function checkVolunteerAuth() {
     try {
         const response = await fetch("/api/auth/me");
         if (!response.ok) {
-            window.location.href = "/login.html";
+            window.location.href = "/index.html";
             return false;
         }
 
         const user = await response.json();
 
         if (user.role !== "VOLUNTEER") {
-            window.location.href = "/index.html";
+            window.location.href = "/main.html";
             return false;
         }
 
         return true;
     } catch (error) {
         console.error(error);
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
         return false;
     }
 }

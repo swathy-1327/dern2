@@ -58,7 +58,7 @@ async function checkAuthAndLoad() {
     try {
         const response = await fetch("/api/auth/me");
         if (!response.ok) {
-            window.location.href = "/login.html";
+            window.location.href = "/index.html";
             return;
         }
 
@@ -68,7 +68,7 @@ async function checkAuthAndLoad() {
         initMap();
     } catch (error) {
         console.error("Auth check failed:", error);
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
     }
 }
 
@@ -448,7 +448,7 @@ async function logoutUser() {
             method: "POST"
         });
 
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
     } catch (error) {
         console.error("Logout failed:", error);
     }

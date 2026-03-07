@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 form.reset();
                 setTimeout(() => {
-                    window.location.href = "/login.html";
+                    window.location.href = "/index.html";
                 }, 1000);
             }
         } catch (error) {
