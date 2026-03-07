@@ -10,6 +10,7 @@ let radarInterval = null;
 let userMarker = null ;
 let markersVisible = true ;
 let heatmapVisible = true ;
+let routeLine = null;
 let responderMarkers = [];
 let demoVolunteers = [
     {name:"Dr. Alex", skill:"DOCTOR", lat:9.968, lng:76.326},
@@ -411,7 +412,78 @@ function drawHeatMap() {
 
 document.addEventListener("DOMContentLoaded", () => {
     checkAuthAndLoad();
+    const safeWalkToggleBtn = document.getElementById("safeWalkToggleBtn");
+    const safeWalkPanel = document.getElementById("safeWalkPanel");
+    const startSafeWalkBtn = document.getElementById("startSafeWalkBtn");
 
+    if (safeWalkToggleBtn && safeWalkPanel) {
+        safeWalkToggleBtn.addEventListener("click", () => {
+            safeWalkPanel.classList.toggle("hidden-panel");
+        });
+    }
+
+    if (startSafeWalkBtn) {
+        startSafeWalkBtn.addEventListener("click", startSafeWalk);
+    }
+
+    function startSafeWalk() {
+        const destLat = parseFloat(document.getElementById("destLat").value);
+        const destLng = parseFloat(document.getElementById("destLng").value);
+
+        if (currentUserLat === null || currentUserLng === null) {
+            alert("Current location not available yet.");
+            return;
+        }
+
+        if (isNaN(destLat) || isNaN(destLng)) {
+            alert("Enter valid destination coordinates.");
+            return;
+        }
+
+        if (routeLine) {
+            map.removeLayer(routeLine);
+        }
+
+        routeLine = L.polyline([
+            [currentUserLat, currentUserLng],
+            [destLat, destLng]
+        ], { color: "green", weight: 5 }).addTo(map);
+
+        map.fitBounds(routeLine.getBounds());
+
+        evaluateSafeWalk(destLat, destLng);
+    }
+
+    function evaluateSafeWalk(destLat, destLng) {
+        const warnings = [];
+        let dangerScore = 0;
+
+        allReports.forEach(report => {
+            const d1 = getDistanceInMeters(currentUserLat, currentUserLng, report.latitude, report.longitude);
+            const d2 = getDistanceInMeters(destLat, destLng, report.latitude, report.longitude);
+
+            if (d1 <= 300 || d2 <= 300) {
+                warnings.push(`${report.type}: ${report.description || "Reported hazard near route"}`);
+
+                if (report.type === "CRASH" || report.type === "ACCIDENT_PRONE") dangerScore += 25;
+                else if (report.type === "UNSAFE_AREA" || report.type === "OPEN_CANAL") dangerScore += 20;
+                else if (report.type === "POTHOLE") dangerScore += 10;
+                else dangerScore += 8;
+            }
+        });
+
+        let safetyScore = 100 - dangerScore;
+        if (safetyScore < 0) safetyScore = 0;
+
+        document.getElementById("safeWalkScore").textContent = `Safety Score: ${safetyScore}/100`;
+
+        const warningsBox = document.getElementById("safeWalkWarnings");
+        if (warnings.length === 0) {
+            warningsBox.innerHTML = "<div class='request-card'>No major hazards detected near this route.</div>";
+        } else {
+            warningsBox.innerHTML = warnings.map(w => `<div class="request-card">${w}</div>`).join("");
+        }
+    }
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", logoutUser);
