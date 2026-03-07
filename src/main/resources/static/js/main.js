@@ -65,6 +65,15 @@ async function checkAuthAndLoad() {
         const user = await response.json();
         console.log("Logged in as:", user.name, user.role);
 
+        const volunteerLink = document.getElementById("volunteerDashboardLink");
+        if (volunteerLink) {
+            if (user.role === "VOLUNTEER") {
+                volunteerLink.style.display = "block";
+            } else {
+                volunteerLink.style.display = "none";
+            }
+        }
+
         initMap();
     } catch (error) {
         console.error("Auth check failed:", error);
