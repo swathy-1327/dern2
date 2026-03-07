@@ -33,6 +33,14 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        const hasImage = reportImageInput && reportImageInput.files && reportImageInput.files.length > 0;
+
+        const aiResult = runAiAccidentPrototype(
+            document.getElementById("type").value,
+            parseInt(document.getElementById("severity").value),
+            hasImage
+        );
+
         const payload = {
             type: document.getElementById("type").value,
             description: document.getElementById("description").value,
@@ -44,13 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
             aiConfidence: aiResult.confidence,
             aiSeverityEstimate: aiResult.severityLabel
         };
-        const hasImage = reportImageInput && reportImageInput.files && reportImageInput.files.length > 0;
-
-        const aiResult = runAiAccidentPrototype(
-            payload.type,
-            payload.severity,
-            hasImage
-        );
 
         const aiBox = document.getElementById("aiVerificationBox");
         const aiStatus = document.getElementById("aiStatus");
@@ -76,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 message.textContent = "Report submitted successfully.";
                 form.reset();
+                imagePreviewContainer.style.display = "none";
             } else {
                 message.textContent = "Failed to submit report.";
             }
